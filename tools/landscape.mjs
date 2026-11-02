@@ -1,6 +1,3 @@
-// Generates the low-poly scenery SVGs in img/. Run from the repo root:
-//   node tools/landscape.mjs
-// Output is deterministic (seeded), so re-running only changes files when this script changes.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,7 +5,6 @@ import { fileURLToPath } from "node:url";
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "img");
 mkdirSync(OUT, { recursive: true });
 
-// ---------- helpers ----------
 function rng(seed) {
   return function () {
     seed = (seed + 0x6d2b79f5) | 0;
@@ -37,7 +33,6 @@ const write = (name, text) => {
   console.log(name, (text.length / 1024).toFixed(1) + " KB");
 };
 
-// Catmull-Rom sampling for smooth center lines.
 function spline(points, samples) {
   const out = [];
   const segs = points.length - 1;
@@ -53,10 +48,6 @@ function spline(points, samples) {
   return out;
 }
 
-// ---------- side-view pieces ----------
-
-// A mountain range: the ridge is subdivided, then each column is dropped to the base in jittered rows.
-// Faces that slope up toward the sun (left) are lit, faces sloping away are shaded.
 function ridgeLayer({ seed, ridge, base = 760, rows = 5, step = 44, rough = 10, colors, snowline, haze = 0.35, fade }) {
   const r = rng(seed);
   const top = [];
@@ -115,7 +106,6 @@ function ridgeY(top, x) {
   return top[top.length - 1][1];
 }
 
-// A pine in three tiers; left halves catch the light.
 function pine(x, y, h, lit, dark, trunk = "#4a3527") {
   const tw = h * 0.07;
   let s = poly([[x - tw, y], [x + tw, y], [x + tw, y - h * 0.16], [x - tw, y - h * 0.16]], trunk);
@@ -147,7 +137,6 @@ function forest(r, { count, xMin, xMax, yAt, band, size, lit, dark, avoid = () =
   }).join("");
 }
 
-// Faceted blob: fan of triangles from a center through an inner ring to a jittered rim.
 function facetedOval(r, cx, cy, rx, ry, n, colorAt) {
   const rim = [], inner = [];
   for (let i = 0; i < n; i++) {
@@ -166,7 +155,6 @@ function facetedOval(r, cx, cy, rx, ry, n, colorAt) {
   return s;
 }
 
-// A faceted ribbon along a center line: three points across at each sample, four triangles per step.
 function ribbon(center, widthAt, colorAt, finish = (c) => c) {
   const side = center.map((p, i) => {
     const a = center[Math.max(i - 1, 0)], b = center[Math.min(i + 1, center.length - 1)];
@@ -184,12 +172,10 @@ function ribbon(center, widthAt, colorAt, finish = (c) => c) {
   return s;
 }
 
-// ---------- hero scenery (1440 x 720, anchored bottom-center) ----------
 const W = 1440, H = 720;
-const MIST = "#e7eee6"; // must match --mist in css/styles.css
+const MIST = "#e7eee6";
 const SLICE = "xMidYMax slice";
 
-// Sky: faint facets over a dawn gradient. Stretched to the hero, so no circles live here.
 {
   const r = rng(7);
   const sw = 1440, sh = 900, cx = 12, cy = 8;
@@ -217,12 +203,14 @@ const SLICE = "xMidYMax slice";
   write("sky.svg", svg(sw, sh, "none", body));
 }
 
-// Far range: snowy peaks right of center, low on the left where the headline sits. Sun and clouds live here.
 {
   const r = rng(11);
+  write("sun.svg", svg(140, 140, "xMidYMid meet",
+    facetedOval(r, 70, 70, 58, 58, 10, (d, i) => (i % 2 ? mix("#ffd57a", "#f7b955", d * 0.6) : mix("#ffe39c", "#f9c464", d * 0.6)))));
+}
+
+{
   let body = "";
-  body += facetedOval(r, 1010, 250, 58, 58, 10, (d, i) => (i % 2 ? mix("#ffd57a", "#f7b955", d * 0.6) : mix("#ffe39c", "#f9c464", d * 0.6)));
-  // clouds
   const cloud = (x, y, s) => {
     const outline = [[-1, 0], [-0.82, -0.36], [-0.5, -0.5], [-0.3, -0.86], [0.08, -1], [0.38, -0.7], [0.62, -0.78], [0.9, -0.4], [1, 0]]
       .map(([u, v]) => [x + u * s * 1.6, y + v * s * 0.62]);
@@ -247,7 +235,6 @@ const SLICE = "xMidYMax slice";
   write("ridge-far.svg", svg(W, H, SLICE, body, style));
 }
 
-// Mid range: blue-green, a few dark firs on its shoulders.
 {
   const r = rng(21);
   const mid = ridgeLayer({
@@ -260,7 +247,6 @@ const SLICE = "xMidYMax slice";
   write("ridge-mid.svg", svg(W, H, SLICE, mid.svg + trees));
 }
 
-// Near hills: deep pine green with a dense tree line along the top.
 {
   const r = rng(31);
   const near = ridgeLayer({
@@ -274,7 +260,6 @@ const SLICE = "xMidYMax slice";
   write("ridge-near.svg", svg(W, H, SLICE, near.svg + trees));
 }
 
-// Valley floor: meadow, the river coming out of the gap, a pond, foreground pines. The bottom dissolves into the page.
 {
   const r = rng(41);
   const fade = { from: 620, to: 712, color: MIST };
@@ -286,7 +271,6 @@ const SLICE = "xMidYMax slice";
   });
   let body = valley.svg;
 
-  // River: drawn last, over the mist, so it stays visible down to the edge where js/land.js picks it up.
   const center = spline([[712, 566], [700, 584], [640, 604], [676, 630], [610, 662], [520, 700], [470, 740]], 26);
   const widthAt = (i) => 5 + Math.pow(i / (center.length - 1), 1.7) * 66;
   const fadeTo = (c, y) => (y > fade.from ? mix(c, MIST, 0.5 * Math.pow((y - fade.from) / (fade.to - fade.from), 1.2)) : c);
@@ -299,19 +283,16 @@ const SLICE = "xMidYMax slice";
     const [x, y] = center[i], w = widthAt(i) * 0.3;
     river += poly([[x - w, y], [x + w * 0.2, y - 1.5], [x + w, y + 1]], "#ffffff", ` class="glint" style="animation-delay:${(i * 0.37).toFixed(2)}s"`);
   }
-  // Where the river leaves the bottom edge; js/land.js starts the page's river from here (HERO_RIVER).
   const k = center.findIndex(([, y]) => y >= H);
   const t = (H - center[k - 1][1]) / (center[k][1] - center[k - 1][1]);
   console.log("valley river exits at x =", n1(center[k - 1][0] + (center[k][0] - center[k - 1][0]) * t), "width =", n1(widthAt(k - 1 + t)));
 
-  // Pond
   const pondX = 1140, pondY = 600;
   body += facetedOval(r, pondX, pondY + 2, 150, 30, 14, (d) => tone(mix("#c8b98a", "#a99a6b", d), (r() - 0.5) * 0.1));
   body += facetedOval(r, pondX, pondY, 128, 22, 14, (d, i) => tone(mix("#a6d3e3", "#4b93b7", d * 0.9), (r() - 0.5) * 0.12 + (i % 4 === 0 ? 0.12 : 0)));
   body += poly([[pondX - 60, pondY - 2], [pondX + 10, pondY - 4], [pondX + 40, pondY - 1]], "#ffffff", ` class="glint"`);
   body += poly([[pondX + 30, pondY + 6], [pondX + 80, pondY + 4], [pondX + 95, pondY + 7]], "#ffffff", ` class="glint" style="animation-delay:1.8s"`);
 
-  // Pines on the meadow; keep clear of water.
   const nearWater = (x, y) =>
     center.some(([cx, cy], i) => Math.hypot(x - cx, (y - cy) * 1.4) < widthAt(i) * 0.8 + 26) ||
     ((x - pondX) / 175) ** 2 + ((y - pondY) / 44) ** 2 < 1;
@@ -326,7 +307,6 @@ const SLICE = "xMidYMax slice";
   write("valley.svg", svg(W, H, SLICE, body, style));
 }
 
-// ---------- trip picker terrain (600 x 400, cropped to cover its box) ----------
 {
   const r = rng(51);
   const MW = 600, MH = 400, CX = 30, CY = 20;
@@ -380,7 +360,6 @@ const SLICE = "xMidYMax slice";
       }
     }
   }
-  // Water on top of the terrain: river into the lake.
   const riverPx = river.map(([u, v]) => [u * MW, v * MH]);
   body += ribbon(riverPx, (i) => 5 + (i / riverPx.length) * 9, (q) => tone(q < 2 ? "#7cc0da" : "#529fc4", (r() - 0.5) * 0.14));
   body += facetedOval(r, 0.7 * MW, 0.71 * MH, 0.15 * MW, 0.11 * MH, 14, (d) => tone(mix("#9ad0e3", "#4a95bb", d), (r() - 0.5) * 0.1));

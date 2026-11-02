@@ -32,6 +32,7 @@
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
       <nav class="nav" id="site-nav" aria-label="Primary">
         <a href="#issue">Issue</a>
+        <a href="#goal">SDG</a>
         <a href="#evidence">Evidence</a>
         <a href="#trips">Trips</a>
         <a href="#act">Get involved</a>
@@ -43,23 +44,54 @@
   <main id="main">
     <section class="hero" id="top">
       <div class="scene" aria-hidden="true">
-        <img class="sky" src="img/sky.svg" alt="">
+        <img class="sky" src="img/sky.svg" alt="" fetchpriority="high">
+        <img class="sun" data-depth="1.15" src="img/sun.svg" alt="">
         <img class="layer" data-depth="0.4" src="img/ridge-far.svg" alt="">
         <img class="layer" data-depth="0.26" src="img/ridge-mid.svg" alt="">
         <img class="layer" data-depth="0.13" src="img/ridge-near.svg" alt="">
         <img class="layer" src="img/valley.svg" alt="">
       </div>
-      <div class="wrap hero-grid">
-        <div>
-          <p class="kicker">Outdoor Recreation Georgia Tech · Campus Recreation</p>
-          <h1>Step away from the screen. Step into something real.</h1>
-          <p class="lede">Outdoor Recreation Georgia Tech (ORGT) is a Campus Recreation program—not a club. Its beginner-friendly trips for current students include instruction, transportation, and specialty equipment. <a class="cite" href="#source-6" aria-label="Source 6">[6]</a></p>
-          <div class="actions">
-            <a class="btn btn-primary" href="#act">Plan your first trip</a>
-            <a class="btn btn-ghost" href="#issue">Why outdoor well-being matters</a>
-          </div>
+      <div class="wrap hero-inner">
+        <p class="kicker">Outdoor Recreation Georgia Tech · Campus Recreation</p>
+        <h1>Step away from the screen. <em>Step into something real.</em></h1>
+        <p class="lede">Outdoor Recreation Georgia Tech (ORGT) is a <strong>Campus Recreation program, not a club</strong>. Its beginner-friendly trips for current students <strong>include instruction, transportation, and specialty gear</strong>, so you can try something new without buying anything first.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#act">Plan your first trip</a>
+          <a class="btn btn-ghost" href="#issue">Why outdoor well-being matters</a>
         </div>
-        <aside class="hero-card" aria-label="Sustainable Development Goal 3">
+      </div>
+    </section>
+
+    <div class="wild" data-land>
+    <div class="wrap">
+      <section class="stat-row alarm" aria-labelledby="alarm-head">
+        <h2 class="alarm-head" id="alarm-head">The problem at Georgia Tech</h2>
+        <div class="stat"><div class="viz" data-viz="ratio" data-of="3" data-hit="1.98" aria-hidden="true"></div><b>2 in 3</b><span>Students needed mental health support last year</span></div>
+        <div class="stat"><div class="viz" data-viz="ratio" data-of="3" data-hit="1" data-tone="good" aria-hidden="true"></div><b>Only 1 in 3</b><span>Received mental health care</span></div>
+        <div class="stat"><div class="viz" data-viz="ratio" data-of="2" data-hit="1.13" aria-hidden="true"></div><b>Over 1 in 2</b><span>Screened as lonely</span></div>
+        <div class="stat"><div class="viz" data-viz="ratio" data-of="3" data-hit="1.87" aria-hidden="true"></div><b>Nearly 2 in 3</b><span>Don’t get enough exercise</span></div>
+      </section>
+
+      <section class="section" id="issue">
+          <div class="card card-l">
+            <p class="kicker">Why it matters</p>
+            <h2>Running on empty?</h2>
+            <p>Worn out before the week is even over? Can’t remember your last real break? Between back-to-back lectures, late-night problem sets, exams, and hours at a screen, there is barely time to eat well, sleep, or slow down. At Georgia Tech, <strong>taking care of yourself easily gets pushed to tomorrow</strong>.</p>
+            <p>We usually hear about depletion when it comes to the planet: forests, rivers, and soil used up faster than they can recover. <strong>People can run out the same way.</strong> Keep spending your energy without putting any back, and eventually there is not much left.</p>
+            <p>That is why <strong>good health is part of sustainability</strong>. Sustainability is about more than energy, buildings, and waste. It is also about whether people can stay healthy and thrive, and UN Sustainable Development Goal 3 treats good health and well-being as part of a sustainable future, not a side issue.</p>
+            <p>Georgia Tech’s Sustainability Next plan says the Institute intends to advance the full range of the UN goals, and its strategic plan calls for wider access to physical, mental, and emotional well-being programs.</p>
+            <p>So start with your own reserves. ORGT Adventure Trips give you a reason to step away from campus, get outside with other students, and <strong>make room for your physical and mental well-being</strong>.</p>
+          </div>
+          <aside class="card card-r card-dark">
+            <p class="kicker">Starting from zero?</p>
+            <h3>No car, gear, or experience? That’s okay.</h3>
+            <p>Most trips are <strong>beginner-friendly</strong>, and standard trips <strong>include transportation and specialty equipment</strong>, so you don’t need to own a kayak, a climbing rack, or a car to try something new. You bring your own food and attend a class the week before the trip.</p>
+            <p><strong>Cost shouldn’t stop you.</strong> Pell Grant recipients and recipients of a Georgia Tech need-based scholarship may qualify for a fee waiver, so check before deciding a trip is out of reach.</p>
+          </aside>
+      </section>
+
+      <section class="section" id="goal">
+        <div class="card card-l card-dark sdg-card">
           <svg class="topo" viewBox="0 0 400 320" aria-hidden="true">
             <path d="M-10 60 C80 40 120 90 200 70 C300 46 340 90 420 60" fill="none" stroke="#f2b44f" stroke-width="1.4"/>
             <path d="M-10 110 C70 90 140 140 220 120 C310 96 350 150 420 110" fill="none" stroke="#93bf73" stroke-width="1.4"/>
@@ -67,42 +99,22 @@
             <path d="M-10 230 C80 210 160 260 250 230 C330 204 370 250 420 220" fill="none" stroke="#93bf73" stroke-width="1.4"/>
           </svg>
           <div class="card-body">
+            <p class="kicker">The goal behind it</p>
             <div class="sdg">
               <div class="sdg-num" aria-hidden="true">3</div>
               <div>
-                <strong>UN Goal 3 · Good Health and Well-Being</strong>
-                <p style="margin:0.2rem 0 0">Ensure healthy lives and promote well-being for all at all ages. Target 3.4 specifically calls for promoting mental health and well-being. <a class="cite" href="#source-1" aria-label="Source 1">[1]</a></p>
+                <strong>UN SDG 3 · Good Health and Well-Being</strong>
+                <p style="margin:0.2rem 0 0">Ensure healthy lives and promote well-being for all at all ages.</p>
               </div>
             </div>
-            <p>Outdoor recreation can support well-being, but it is not health care. <a class="cite" href="#source-11">[11]</a> <a class="cite" href="#source-12">[12]</a> If you need clinical support, use Georgia Tech’s <a href="https://counseling.gatech.edu/">Center for Mental Health Care and Resources</a>.</p>
+            <section class="sdg-about" aria-labelledby="sdg-about-title">
+              <h2 id="sdg-about-title">What is SDG 3?</h2>
+              <p>In 2015, every UN member state adopted <strong>17 Sustainable Development Goals</strong> as a shared plan for 2030. SDG 3 covers health at every age, and <strong>Target 3.4 calls for promoting mental health and well-being</strong> alongside preventing disease.</p>
+              <a class="sdg-link" href="https://sdgs.un.org/goals/goal3">Read SDG 3 and its targets on the UN site</a>
+            </section>
+            <p><strong>Outdoor recreation can support well-being, but it is not health care.</strong> For clinical support, contact Georgia Tech’s <a href="https://counseling.gatech.edu/">Center for Mental Health Care and Resources</a>.</p>
           </div>
-        </aside>
-      </div>
-    </section>
-
-    <div class="wild" data-land>
-    <div class="wrap">
-      <section class="stat-row" aria-label="Program snapshot">
-        <!-- Each .viz is drawn by js/site.js; the number and caption carry the meaning without it. -->
-        <div class="stat"><div class="viz" data-viz="years" aria-hidden="true"></div><b>50+</b><span>years of ORGT trips <a class="cite" href="#source-6">[6]</a></span><small class="key">1 tree = 1 year</small></div>
-        <div class="stat"><div class="viz" data-viz="trips" aria-hidden="true"></div><b>100+</b><span>open-enrollment trips each year <a class="cite" href="#source-6">[6]</a></span><small class="key">1 peak = 1 trip</small></div>
-        <div class="stat"><div class="viz" data-viz="group" aria-hidden="true"></div><b>≤12</b><span>participants on most trips <a class="cite" href="#source-6">[6]</a></span><small class="key">1 figure = 1 participant</small></div>
-        <div class="stat"><div class="viz" data-viz="month" aria-hidden="true"></div><b>1 month</b><span>before departure, registration opens <a class="cite" href="#source-6">[6]</a></span><small class="key">opens ~4 weeks before</small></div>
-      </section>
-
-      <section class="section" id="issue">
-          <div class="card card-l">
-            <p class="kicker">Why it matters</p>
-            <h2>Good health is part of sustainability.</h2>
-            <p>Sustainability is not only about energy, buildings, and waste. It is also about whether people can stay healthy and thrive. UN Sustainable Development Goal 3 calls for healthy lives and well-being, including mental health. Georgia Tech’s Sustainability Next plan says the Institute intends to advance the full range of the UN goals. “Culture and Organization” and “Living Learning Campus” are two of its six priorities. <a class="cite" href="#source-1">[1]</a> <a class="cite" href="#source-2">[2]</a> <a class="cite" href="#source-3">[3]</a></p>
-            <p>Georgia Tech’s strategic plan calls for wider access to physical, mental, and emotional well-being programs. The Office of Sustainability gets more specific: its Student Sustainable Living Guide lists ORGT trips and gear rental under physical well-being and recommends outdoor time under mental well-being. <a class="cite" href="#source-4">[4]</a> <a class="cite" href="#source-5">[5]</a></p>
-          </div>
-          <aside class="card card-r card-dark">
-            <p class="kicker">Starting from zero?</p>
-            <h3>No car, gear, or outdoor experience? That is okay.</h3>
-            <p>Most ORGT trips are beginner-friendly. Standard trips include transportation and specialty equipment, so students do not need to own a kayak, climbing gear, or a car just to try an activity. Participants bring their own food and attend a class before the trip. <a class="cite" href="#source-6">[6]</a></p>
-            <p>Pell Grant recipients and recipients of a Georgia Tech need-based scholarship may also be eligible for a fee waiver. <a class="cite" href="#source-6">[6]</a></p>
-          </aside>
+        </div>
       </section>
 
       <section class="section split" id="evidence">
@@ -110,42 +122,46 @@
           <div class="card">
             <p class="kicker">What the research says</p>
             <h2>Why an adventure trip can be a useful break.</h2>
-            <p>Georgia Tech’s Fall 2022 student health assessment offers a local snapshot. Among 318 respondents, 56.6% screened positive for loneliness, 37.7% met the combined aerobic-and-strength guideline for an “active adult,” and 28.8% experienced some food insecurity. Because the response rate was 4%, these figures should not be treated as exact rates for every Georgia Tech student. <a class="cite" href="#source-8">[8]</a></p>
-            <p>A separate 2024 Georgia Tech analysis reported that about two-thirds of students in the 2022–23 Healthy Minds Study said they needed emotional or mental health support in the previous year, while about one-third received services. Outdoor recreation is not a substitute for those services, but the figures show why everyday ways to support well-being also matter. <a class="cite" href="#source-9">[9]</a></p>
+            <p><strong>Georgia Tech students are stretched thin.</strong> A 2024 Georgia Tech analysis reported that about two-thirds of students in the 2022–23 Healthy Minds Study needed emotional or mental health support in the previous year, but <strong>only about one-third received services</strong>. Outdoor recreation is not a substitute for those services, but the figures show why everyday ways to support well-being also matter.</p>
+            <p>Georgia Tech’s Fall 2022 student health assessment adds a local snapshot: <strong>56.6% of respondents screened positive for loneliness</strong>, only 37.7% met the combined cardio-and-strength guideline, and 28.8% experienced some food insecurity.</p>
+            <p class="source-note">The Fall 2022 figures come from 318 respondents, a 4% response rate, so they should not be treated as exact rates for every Georgia Tech student.</p>
           </div>
           <div class="card">
-            <p>Studies provide several reasons to consider an adventure trip. A broad research review found strong evidence that contact with nature can benefit mental and physical health. In two experiments, walking in nature or viewing nature images improved performance on attention tasks compared with urban conditions. Laboratory studies also found nature scenes more restorative than urban scenes, although one video experiment found no difference in loneliness, belonging, or mood. <a class="cite" href="#source-11">[11]</a> <a class="cite" href="#source-14">[14]</a> <a class="cite" href="#source-10">[10]</a></p>
-            <p>Other studies show that simply counting minutes outdoors misses part of the picture. One large English study associated at least 120 minutes of weekly nature contact with better self-reported health and well-being. Research with 2,096 UK adults found that feeling connected to nature and noticing it through simple activities were stronger predictors of well-being than time alone. <a class="cite" href="#source-15">[15]</a> <a class="cite" href="#source-13">[13]</a> <a class="cite" href="#source-12">[12]</a></p>
+            <p><strong>Nature helps.</strong> A broad research review found strong evidence that contact with nature can benefit mental and physical health. In two experiments, <strong>walking in nature or viewing nature images improved attention</strong> compared with urban conditions, and laboratory studies found nature scenes more restorative than urban ones.</p>
+            <p>Simply counting minutes outdoors also misses part of the picture. One large English study linked <strong>at least 120 minutes a week in nature</strong> with better self-reported health and well-being, while research with 2,096 UK adults found that <strong>feeling connected to nature and noticing it</strong> through simple activities predicted well-being better than time alone.</p>
           </div>
           <div class="card card-dark">
-            <p><strong>How that connects to ORGT:</strong> adventure trips place students in natural settings, involve physical activity, and teach them to engage with the environment through skills such as paddling, climbing, biking, or backcountry travel. <a class="cite" href="#source-6">[6]</a> <a class="cite" href="#source-16">[16]</a> The studies did not test ORGT, so they cannot promise that one trip will improve anyone’s mental health. They do show why active time in nature is a reasonable option for a break from academic work.</p>
+            <p><strong>Where ORGT fits:</strong> adventure trips put students in natural settings, get them moving, and teach them to paddle, climb, bike, or backpack with a small group. No study tested ORGT itself, so the research cannot promise that one trip will improve anyone’s mental health. It does show why active time in nature is <strong>a reasonable option for a real break from academic work</strong>.</p>
           </div>
         </div>
-        <div class="card stick">
-          <h2>Georgia Tech health signals</h2>
-          <div class="chart" data-chart>
-            <button class="bar-btn" type="button" style="--w:56.6%" data-title="Loneliness screen" data-detail="56.6% of respondents screened positive on the three-item UCLA Loneliness Scale. This is a survey result, not a diagnosis.">
-              <div class="bar-top"><span>Positive loneliness screen</span><span>56.6%</span></div>
-              <div class="track"><span class="fill"></span></div>
+        <div class="card stick alarm-card">
+          <h2>How many are struggling?</h2>
+          <div class="waffle-wrap">
+          <div class="waffle" data-waffle aria-hidden="true"></div>
+          <div class="detail" data-chart-detail aria-live="polite">
+            <p class="detail-num"><b>66</b> of 100</p>
+            <h3>Needed mental health support last year</h3>
+            <p>About two-thirds of Georgia Tech students in the 2022–23 Healthy Minds Study needed emotional or mental health support.</p>
+          </div>
+          </div>
+          <div class="chart" data-chart role="group" aria-label="Choose a measure">
+            <button class="bar-btn" type="button" data-n="66" data-title="Needed mental health support last year" data-detail="About two-thirds of Georgia Tech students in the 2022–23 Healthy Minds Study needed emotional or mental health support.">
+              <span class="bar-big">66</span><span class="bar-label">Needed support</span>
             </button>
-            <button class="bar-btn" type="button" style="--w:37.7%" data-title="Physical activity" data-detail="37.7% met the federal recommendations for both aerobic activity and strength training.">
-              <div class="bar-top"><span>Met activity guideline</span><span>37.7%</span></div>
-              <div class="track"><span class="fill"></span></div>
+            <button class="bar-btn" type="button" data-n="33" data-tone="warn" data-title="Actually got mental health care" data-detail="Only about one-third received services, far fewer than the two-thirds who needed support.">
+              <span class="bar-big">33</span><span class="bar-label">Got care</span>
             </button>
-            <button class="bar-btn" type="button" style="--w:66%" data-title="Need for support" data-detail="A 2024 Georgia Tech report summarizes the Healthy Minds result as two-thirds needing emotional or mental health support in the prior year.">
-              <div class="bar-top"><span>Needed mental health support</span><span>about 2 in 3</span></div>
-              <div class="track"><span class="fill"></span></div>
+            <button class="bar-btn" type="button" data-n="62" data-title="Don’t get enough exercise" data-detail="62.3% of Fall 2022 respondents did not meet federal guidelines for both cardio and strength exercise. Only 37.7% did.">
+              <span class="bar-big">62</span><span class="bar-label">Too little exercise</span>
             </button>
-            <button class="bar-btn" type="button" style="--w:28.8%" data-title="Food insecurity" data-detail="28.8% of Fall 2022 respondents experienced low or very low food security. That is one reason the trip fee and fee-waiver option matter.">
-              <div class="bar-top"><span>Any food insecurity</span><span>28.8%</span></div>
-              <div class="track"><span class="fill"></span></div>
+            <button class="bar-btn" type="button" data-n="57" data-tone="warn" data-title="Screened as lonely" data-detail="56.6% of Fall 2022 respondents screened positive on the three-question UCLA Loneliness Scale. It is a survey screen, not a diagnosis.">
+              <span class="bar-big">57</span><span class="bar-label">Lonely</span>
+            </button>
+            <button class="bar-btn" type="button" data-n="29" data-title="Couldn’t always count on enough food" data-detail="28.8% of Fall 2022 respondents had low or very low food security. It is one reason the fee-waiver option matters.">
+              <span class="bar-big">29</span><span class="bar-label">Short on food</span>
             </button>
           </div>
-          <div class="detail" data-chart-detail>
-            <h3>Select a bar</h3>
-            <p>Choose any measure above to see what it means.</p>
-          </div>
-          <p class="source-note">Chart sources: Georgia Tech ACHA–NCHA III, Fall 2022 <a class="cite" href="#source-8">[8]</a>, and <em>Reducing Health Disparities</em>, 2024 <a class="cite" href="#source-9">[9]</a>.</p>
+          <p class="source-note">Each figure is 1 student in 100, rounded from survey percentages. Sources: Georgia Tech ACHA–NCHA III, Fall 2022 <a class="cite" href="#source-8">[8]</a>; <em>Reducing Health Disparities</em>, 2024 <a class="cite" href="#source-9">[9]</a>.</p>
         </div>
       </section>
 
@@ -153,118 +169,116 @@
         <div class="card card-r">
           <p class="kicker">What ORGT offers</p>
           <h2>What comes with an ORGT trip</h2>
-          <p>ORGT has offered full-day and overnight adventures for more than 50 years and now advertises more than 100 open-enrollment trips each year. Trips are led by skilled Georgia Tech students and alumni. Most standard trips have no more than 12 participants, which allows for instruction in a small group. <a class="cite" href="#source-6">[6]</a></p>
+          <p>ORGT has offered full-day and overnight adventures for <strong>more than 50 years</strong> and now advertises <strong>more than 100 open-enrollment trips each year</strong>. Trips are led by skilled Georgia Tech students and alumni, and most standard trips have no more than 12 participants, so you get real instruction in a small group instead of just following along.</p>
         </div>
         <div class="card card-l">
-          <p>For a standard day or overnight trip, the fee includes instruction, specialty equipment, transportation, and pre-trip planning. Participants usually do not need to buy equipment, but they do bring their own food and snacks. A required class of two to three hours takes place during the week before departure. Paddling trips also require a pool test: swim 25–50 yards and tread water for one minute without a personal flotation device. <a class="cite" href="#source-6">[6]</a></p>
-          <p>The program emphasizes an accessible first step, careful preparation, student and alumni leadership, small-group instruction, and a route from participant to future trip leader. <a class="cite" href="#source-6">[6]</a></p>
+          <p>The fee for a standard day or overnight trip covers <strong>instruction, specialty equipment, transportation, and pre-trip planning</strong>. You usually don’t need to buy equipment, but you do bring your own food and snacks. A required <strong>two- to three-hour class</strong> runs the week before departure, and paddling trips add a pool test: swim 25–50 yards and tread water for one minute without a life jacket.</p>
+          <p>The program is built around <strong>an easy first step</strong>, careful preparation, student and alumni leadership, small-group instruction, and <strong>a path from participant to future trip leader</strong>.</p>
         </div>
-        <div class="card card-wide">
-          <h3>Explore a beginner path</h3>
-          <p class="source-note">Not sure where to begin? Jump to an activity’s stop on the river below, or keep scrolling and paddle downriver past all six.</p>
+        <div class="card card-wide trailhead">
+          <div class="signpost">
+            <span class="post" aria-hidden="true"></span>
+            <h2 class="sign-head">ORGT Trailhead<small>Outdoor Recreation Georgia Tech</small></h2>
+            <p class="plank plank-r"><b>50+ years</b><span>Running student trips</span></p>
+            <p class="plank plank-l"><b>100+ trips</b><span>Every year, about two a week</span></p>
+            <p class="plank plank-r"><b>12 people</b><span>Max on most trips</span></p>
+            <p class="plank plank-l"><b>1 month</b><span>Before departure, sign-ups open</span></p>
+          </div>
+        </div>
+        <div class="card card-wide chapter">
+          <p class="kicker">The trips</p>
+          <h2>Pick a beginner path.</h2>
+          <p class="chapter-lede"><strong>Six ways in, no experience needed.</strong> Pick one to jump straight to its stop, or keep scrolling to paddle downriver past all of them.</p>
           <nav class="trip-picker" aria-label="Activity stops">
-            <a class="region" href="#stop-gear">Gear rental</a>
-            <a class="region" href="#stop-backpacking">Backpacking</a>
-            <a class="region" href="#stop-biking">Mountain biking</a>
-            <a class="region" href="#stop-whitewater">Whitewater kayaking</a>
-            <a class="region" href="#stop-climbing">Rock climbing</a>
-            <a class="region" href="#stop-caving">Caving</a>
+            <a class="region" href="#stop-gear"><span class="region-icon" data-glyph="gear" aria-hidden="true"></span><span class="region-text"><small>Stop 1</small><span class="region-name">Gear rental</span></span></a>
+            <a class="region" href="#stop-backpacking"><span class="region-icon" data-glyph="backpacking" aria-hidden="true"></span><span class="region-text"><small>Stop 2</small><span class="region-name">Backpacking</span></span></a>
+            <a class="region" href="#stop-biking"><span class="region-icon" data-glyph="biking" aria-hidden="true"></span><span class="region-text"><small>Stop 3</small><span class="region-name">Mountain biking</span></span></a>
+            <a class="region" href="#stop-whitewater"><span class="region-icon" data-glyph="whitewater" aria-hidden="true"></span><span class="region-text"><small>Stop 4</small><span class="region-name">Whitewater kayaking</span></span></a>
+            <a class="region" href="#stop-climbing"><span class="region-icon" data-glyph="climbing" aria-hidden="true"></span><span class="region-text"><small>Stop 5</small><span class="region-name">Rock climbing</span></span></a>
+            <a class="region" href="#stop-caving"><span class="region-icon" data-glyph="caving" aria-hidden="true"></span><span class="region-text"><small>Stop 6</small><span class="region-name">Caving</span></span></a>
           </nav>
         </div>
 
-        <!-- Activity stops. js/land.js draws each landmark into the .spot beside its card. -->
-        <div class="station-row" id="stop-gear" data-station="gear">
+        <div class="station-row" id="stop-gear" data-station="gear" data-official="https://crc.gatech.edu/wilderness-outpost/">
           <div class="spot" aria-hidden="true"></div>
           <article class="card card-l">
             <p class="kicker">Stop 1 of 6 · Gear rental</p>
             <h3>Start at the Wilderness Outpost</h3>
-            <p>Current students, faculty, and staff can rent camping and backpacking gear, flatwater canoes, recreational kayaks, and bouldering gear. The Outpost also offers basic guidance and destination recommendations.</p>
-            <p><a href="https://crc.gatech.edu/wilderness-outpost/">Read the official Campus Recreation page</a></p>
+            <p>Current students, faculty, and staff can rent <strong>camping and backpacking gear, flatwater canoes, recreational kayaks, and bouldering gear</strong>. The staff can also suggest places to go, which makes it <strong>an easy first step</strong> before you sign up for a full trip.</p>
+            <p>Gear rental is different from a guided trip, though. The Outpost does not rent technical climbing equipment, caving equipment, whitewater kayaks, or bikes, and rental requests are made online and are subject to availability.</p>
+            <div class="video-frame photo"><img src="img/photos/gear_rental.jpg" alt="ORGT gear rental flyer: a rented tent pitched at a misty campsite in Talladega National Forest" loading="lazy" style="object-position:50% 50%"></div>
           </article>
         </div>
-        <div class="station-row flip" id="stop-backpacking" data-station="backpacking">
+        <div class="station-row flip" id="stop-backpacking" data-station="backpacking" data-official="https://crc.gatech.edu/backpacking/">
           <div class="spot" aria-hidden="true"></div>
           <article class="card card-r">
             <p class="kicker">Stop 2 of 6</p>
             <h3>Backpacking</h3>
-            <p>The backpacking program welcomes beginners, including students who have never been in the woods. Current offerings include day hikes and overnights.</p>
-            <p><a href="https://crc.gatech.edu/backpacking/">Read the official Campus Recreation page</a></p>
+            <p><strong>Built for beginners</strong>, even if you have never spent a night in the woods. Choose a <strong>day hike</strong> to test your legs or an <strong>overnight</strong> under the stars.</p>
+            <div class="video-frame photo"><img src="img/photos/backpacking.jpg" alt="Two backpackers with full packs checking a map on a rocky trail high above a mountain valley" loading="lazy" style="object-position:50% 50%"></div>
           </article>
         </div>
-        <div class="station-row" id="stop-biking" data-station="biking">
+        <div class="station-row" id="stop-biking" data-station="biking" data-official="https://crc.gatech.edu/bikepacking/">
           <div class="spot" aria-hidden="true"></div>
           <article class="card card-l">
             <p class="kicker">Stop 3 of 6</p>
             <h3>Mountain biking</h3>
-            <p>Day trips are generally beginner-friendly, although the official page notes that most include steep climbs and average about ten miles.</p>
-            <p><a href="https://crc.gatech.edu/bikepacking/">Read the official Campus Recreation page</a></p>
+            <p>Day trips are <strong>generally beginner-friendly</strong>, but come ready to work: most include <strong>steep climbs</strong> and average <strong>about ten miles</strong> of riding.</p>
+            <div class="video-frame photo"><img src="img/photos/mountain_biking.jpg" alt="A rider rolls a mountain bike down a rocky forest trail as the rest of the group waits behind" loading="lazy" style="object-position:50% 50%"></div>
           </article>
         </div>
-        <div class="station-row flip" id="stop-whitewater" data-station="whitewater">
+        <div class="station-row flip" id="stop-whitewater" data-station="whitewater" data-official="https://crc.gatech.edu/whitewater-kayaking/">
           <div class="spot" aria-hidden="true"></div>
           <article class="card card-r">
             <p class="kicker">Stop 4 of 6</p>
             <h3>Whitewater kayaking</h3>
-            <p>Beginner trips teach strokes and wet exits in the pool before moving to a class II stream. Intermediate trips build toward class III skills.</p>
-            <p><a href="https://crc.gatech.edu/whitewater-kayaking/">Read the official Campus Recreation page</a></p>
+            <p>Beginners learn <strong>strokes and wet exits in the pool</strong> first, then put those skills to work on a <strong>class II stream</strong>. Intermediate trips build toward class III once you’re comfortable.</p>
+            <div class="video-frame photo"><img src="img/photos/whitewater_kyaking.jpg" alt="A kayaker in a helmet and life jacket paddles through a whitewater rapid" loading="lazy" style="object-position:50% 60%"></div>
           </article>
         </div>
-        <div class="station-row flip" id="stop-climbing" data-station="climbing">
+        <div class="station-row flip" id="stop-climbing" data-station="climbing" data-official="https://crc.gatech.edu/rock-climbing/">
           <div class="spot" aria-hidden="true"></div>
           <article class="card card-r">
             <p class="kicker">Stop 5 of 6</p>
             <h3>Rock climbing</h3>
-            <p>Beginner trips teach top-rope techniques, equipment, and safety. No prior climbing experience is required, and the official page says trips are limited to five participants.</p>
-            <p><a href="https://crc.gatech.edu/rock-climbing/">Read the official Campus Recreation page</a></p>
+            <p>Beginner trips teach <strong>top-rope technique, equipment, and safety</strong>. <strong>No experience needed</strong>, and trips are capped at <strong>five participants</strong>, so everyone gets time on the rock.</p>
+            <div class="video-frame photo"><img src="img/photos/rockclimbing.jpg" alt="A climber in a helmet works up a rope through a steep rocky canyon" loading="lazy" style="object-position:50% 85%"></div>
           </article>
         </div>
-        <div class="station-row" id="stop-caving" data-station="caving">
+        <div class="station-row" id="stop-caving" data-station="caving" data-official="https://crc.gatech.edu/caving/">
           <div class="spot" aria-hidden="true"></div>
           <article class="card card-l">
             <p class="kicker">Stop 6 of 6</p>
             <h3>Caving</h3>
-            <p>Horizontal trips are the introduction: scrambling, squeezing, crawling, climbing, and walking. Vertical trips add technical ropework after those foundational skills.</p>
-            <p><a href="https://crc.gatech.edu/caving/">Read the official Campus Recreation page</a></p>
+            <p><strong>Horizontal trips</strong> come first: scrambling, squeezing, crawling, climbing, and walking through the cave. <strong>Vertical trips</strong> then add technical ropework once you have the basics.</p>
+            <div class="video-frame photo"><img src="img/photos/caving.jpg" alt="An ORGT caving group in helmets and headlamps inside Tumbling Rock Cave" loading="lazy" style="object-position:50% 50%"></div>
           </article>
         </div>
 
           <div class="card card-l">
             <h3>Try the activity without buying the setup</h3>
-            <p>Transportation and specialty equipment are already included in standard trips. Beginner instruction means prior experience is not expected, and Campus Recreation says small groups are used to ensure quality experiences. Students who may qualify for the fee waiver should check with Campus Recreation before deciding the trip is out of reach. <a class="cite" href="#source-6">[6]</a></p>
+            <p>Standard trips <strong>include transportation and specialty equipment</strong>, beginner instruction means <strong>no experience is expected</strong>, and Campus Recreation says small groups are used to ensure quality experiences. If cost is a worry, <strong>ask Campus Recreation about the fee waiver</strong> before deciding a trip is out of reach.</p>
           </div>
-          <div class="card card-r card-dark">
-            <h3>One important distinction</h3>
-            <p>Gear rental is different from a guided trip. The Wilderness Outpost rents specific items and provides general guidance, but it does not rent technical climbing equipment, caving equipment, whitewater kayaks, or bikes. Rental requests are made online and are subject to availability. <a class="cite" href="#source-7">[7]</a></p>
-          </div>
-        <div class="card card-l">
+        <div class="card card-r">
           <h3>Watch: <em>Experience ORGT</em></h3>
-          <p>Watch an introduction posted by the GTORGT channel. <a class="cite" href="#source-17">[17]</a></p>
+          <p>An introduction to the program from the GTORGT channel.</p>
           <div class="video-frame">
-            <iframe src="https://www.youtube-nocookie.com/embed/GJakSgcYjfM" title="Experience ORGT, a film from Outdoor Recreation Georgia Tech" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/GJakSgcYjfM" title="Experience ORGT, a film from Outdoor Recreation Georgia Tech" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </div>
         </div>
       </section>
 
       <section class="section" id="act">
           <div class="card card-l">
-            <p class="kicker">Ready to try it?</p>
-            <h2>Choose one next step.</h2>
-            <p>You do not have to begin with a full trip. Visit the Wilderness Outpost, ask a question, rent gear, or check the next beginner trip. If you are ready, put its registration date on your calendar.</p>
-            <div class="actions">
-              <a class="btn btn-primary" href="https://crc.gatech.edu/adventure-trips/">View current trips</a>
-              <a class="btn btn-ghost" href="https://crc.gatech.edu/wilderness-outpost/">Explore gear rental</a>
-            </div>
-          </div>
-          <div class="card card-r">
             <h3>Your route from interested to registered</h3>
             <div class="steps">
               <div class="step"><p><strong>Check eligibility.</strong> Open-enrollment instructional trips are for current student members. Students under 18 need a parent or guardian waiver.</p></div>
-              <div class="step"><p><strong>Choose from the official schedule.</strong> Registration is online and generally opens one month before departure. Spaces are first come, first served.</p></div>
-              <div class="step"><p><strong>Address cost before giving up.</strong> Pell Grant recipients and recipients of Georgia Tech need-based scholarships may be eligible for a fee waiver. Ask the Wilderness Outpost at <a href="tel:4048947420">404-894-7420</a>.</p></div>
-              <div class="step"><p><strong>Attend the required class.</strong> For standard trips, plan for two to three hours during the week before departure. Paddling participants must also complete the swim test.</p></div>
-              <div class="step"><p><strong>Continue if it fits.</strong> The official program says successful participation can lead toward nomination, orientation, and training as an ORGT trip leader.</p></div>
+              <div class="step"><p><strong>Pick a trip from the official schedule.</strong> Online registration generally opens a month before departure. Spaces are first come, first served.</p></div>
+              <div class="step"><p><strong>Ask about cost.</strong> Pell Grant and Georgia Tech need-based scholarship recipients may qualify for a fee waiver. Call the Wilderness Outpost at <a href="tel:4048947420">404-894-7420</a>.</p></div>
+              <div class="step"><p><strong>Attend the required class.</strong> For standard trips, plan on two to three hours during the week before departure. Paddlers must also complete the swim test.</p></div>
+              <div class="step"><p><strong>Keep going if it fits.</strong> Successful participation can lead toward nomination, orientation, and training as an ORGT trip leader.</p></div>
             </div>
-            <p class="source-note">Eligibility, registration, waiver, class, and leadership details: official Adventure Trips page. <a class="cite" href="#source-6">[6]</a></p>
+            <p class="source-note">Source for these steps: official Adventure Trips page. <a class="cite" href="#source-6">[6]</a></p>
           </div>
       </section>
 
@@ -298,6 +312,28 @@
     </div>
   </main>
 
+  <div class="trail-guide" data-guide>
+    <section class="next-step" id="next-step" role="dialog" aria-labelledby="next-step-title" aria-hidden="true" data-next-step>
+      <button class="next-close" type="button" aria-label="Close" data-next-close>&times;</button>
+      <p class="kicker">Ready to try it?</p>
+      <h2 id="next-step-title" tabindex="-1">Choose one next step.</h2>
+      <p><strong>You don’t have to start with a full trip.</strong> Visit the Wilderness Outpost, ask a question, rent gear for a weekend, or check the next beginner trip and <strong>put its registration date on your calendar</strong>.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://crc.gatech.edu/adventure-trips/">View current trips</a>
+        <a class="btn btn-ghost" href="https://crc.gatech.edu/wilderness-outpost/">Explore gear rental</a>
+      </div>
+    </section>
+    <div class="guide-board">
+      <a class="guide-sign" href="#trips" data-guide-sign>
+        <span class="guide-glyph" aria-hidden="true"></span>
+        <span class="guide-text"><small></small><strong></strong><span>Official page</span></span>
+      </a>
+      <span class="guide-post" aria-hidden="true"></span>
+    </div>
+    <a class="emblem" href="https://crc.gatech.edu/adventure-trips/" aria-label="ORGT Adventure Trips on the Georgia Tech Campus Recreation site"></a>
+    <button class="next-tab" type="button" aria-controls="next-step" aria-expanded="false" data-next-tab hidden>Next step</button>
+  </div>
+
   <footer class="site-footer">
     <div class="footer-inner footer-grid">
       <div>
@@ -307,9 +343,6 @@
       <div>
         <strong>Register</strong>
         <p><a href="https://mycrc.gatech.edu/">mycrc.gatech.edu</a> · <a href="tel:4048947420">404-894-7420</a></p>
-      </div>
-      <div>
-        <p class="fine">A student promotional project about ORGT Adventure Trips. It is not an official Georgia Tech registration site and does not collect payment.</p>
       </div>
     </div>
   </footer>

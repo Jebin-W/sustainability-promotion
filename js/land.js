@@ -1,23 +1,13 @@
-// The land below the hero, drawn as one long valley that the page travels down. The river leaves the
-// hero's mountains, passes the Wilderness Outpost in a meadow, runs through a forest with a campsite,
-// past rolling hills with singletrack, narrows into a gorge with rapids and climbing walls, and finally
-// pours into a sinkhole cave. Each [data-station] row on the page marks where one of those places is,
-// so the terrain changes around it rather than an icon being dropped beside it. Dense forest lines the
-// sides of the page and closes in above the footer. A kayak rides the river as the page scrolls.
-// The land is drawn here instead of shipped as an image because the page is several times taller on a
-// phone than on a desktop, and the stops move with the layout. Every random choice is seeded, so a
-// rebuild at the same size draws the same land.
 (function () {
   const host = document.querySelector("[data-land]");
   if (!host) return;
 
-  const MIST = "#e7eee6"; // must match --mist in css/styles.css, so the land rises out of the hero's haze
-  const NIGHT = "#10281e"; // must match --forest-night in css/styles.css, so the forest runs into the footer
-  // Where the river leaves the bottom of img/valley.svg (1440 x 720 viewBox); printed by tools/landscape.mjs.
+  const MIST = "#e7eee6";
+  const NIGHT = "#10281e";
   const HERO_RIVER = { x: 492.3, w: 61 };
-  const FADE = 170; // px at the top where the land dissolves into mist
-  const STEP = 36; // px between samples along the river
-  const ROW = 16; // px depth of each row of scenery the kayak can slot between
+  const FADE = 170;
+  const STEP = 36;
+  const ROW = 16;
   const SVGNS = "http://www.w3.org/2000/svg";
 
   function rng(seed) {
@@ -61,9 +51,7 @@
     return inside;
   }
   function misted(fill, y) { return y < FADE ? mix(fill, MIST, 0.55 * Math.pow(1 - y / FADE, 1.3)) : fill; }
-  // The river shows through the mist, so it reads as one river with the hero's.
   function mistedSoft(fill, y) { return y < FADE ? mix(fill, MIST, 0.3 * Math.pow(1 - y / FADE, 1.3)) : fill; }
-  // Wraps scenery so it grows in when the kayak comes near (see .sprout in css/styles.css).
   function sprout(y, body) { return "<g class=\"sprout\" data-y=\"" + Math.round(y) + "\">" + body + "</g>"; }
   function hull(points) {
     const p = points.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
@@ -81,7 +69,6 @@
     return lower.slice(0, -1).concat(upper.slice(0, -1));
   }
 
-  // Smooth sum of sines; returns roughly -1..1.
   function waves(r, count, base) {
     const list = [];
     for (let k = 0; k < count; k++) {
@@ -94,7 +81,6 @@
     };
   }
 
-  // Unit tangent and normal at each point of a line.
   function frames(pts) {
     return pts.map(function (p, i) {
       const a = pts[Math.max(i - 1, 0)], b = pts[Math.min(i + 1, pts.length - 1)];
@@ -103,7 +89,6 @@
     });
   }
 
-  // Even spacing along a line, so bent stretches don't end up with long, thin facets.
   function resample(pts, step) {
     const out = [pts[0]];
     let carry = 0;
@@ -119,11 +104,6 @@
     return out;
   }
 
-  // ---------- a small 3D kit ----------
-  // Buildings, rocks, cliffs and hills are modeled as low-poly solids and drawn in one oblique view that keeps
-  // the map's ground plan exact: x and z are the page's x and y, and height lifts a point up the page and a
-  // little right, so south and west faces show. One sun in the upper left lights every face and casts every
-  // shadow, the same light the terrain and trees use.
   const LEAN = [0.12, -0.8];
   function unit(v) { const l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / l, v[1] / l, v[2] / l]; }
   const EYE = unit([-LEAN[0], 1, -LEAN[1]]);
@@ -137,13 +117,11 @@
     return [s[0] / list.length, s[1] / list.length, s[2] / list.length];
   }
   function screen(p) { return [p[0] + LEAN[0] * p[1], p[2] + LEAN[1] * p[1]]; }
-  // Lit faces warm toward cream, shaded faces cool toward slate, as a painter would.
   function shade(base, n, jit) {
     const t = 0.42 + 0.5 * Math.max(dot(n, SUN), 0) + 0.12 * Math.max(dot(n, EYE), 0) + (jit || 0);
     return t > 0.8 ? mix(base, "#fff4d6", (t - 0.8) * 1.2) : mix(base, "#1d3346", (0.8 - t) * 0.8);
   }
   function model() { return { parts: [] }; }
-  // A convex piece: each face's normal is turned to point away from the piece's center.
   function solid(m, faces, color, cls) {
     const c = mean([].concat.apply([], faces));
     m.parts.push({ c: c, cls: cls, faces: faces.map(function (f) {
@@ -152,12 +130,10 @@
       return { pts: f, n: n, color: typeof color === "function" ? color(n, f) : color };
     }) });
   }
-  // Paint on a surface (doors, windows, trails): always drawn, just after what it sits on.
   function decal(m, pts, color, opts) {
     opts = opts || {};
     m.parts.push({ c: mean(pts), bias: opts.bias || 1.5, cls: opts.cls, faces: [{ pts: pts, flat: true, color: color, alpha: opts.alpha }] });
   }
-  // An open surface such as a hillside: every triangle is its own piece, sorted back to front.
   function surface(m, tris, colorAt) {
     tris.forEach(function (t) {
       let n = unit(cross(sub(t[1], t[0]), sub(t[2], t[0])));
@@ -200,7 +176,6 @@
       [[x0, y0, z0], [x0, y1, z0], [x1, y1, z0], [x1, y0, z0]],
     ], color, cls);
   }
-  // An upright block over a ground plan given in page coordinates.
   function prism(m, foot, y0, y1, color) {
     const faces = [foot.map(function (p) { return [p[0], y1, p[1]]; })];
     foot.forEach(function (p, i) {
@@ -209,7 +184,6 @@
     });
     solid(m, faces, color);
   }
-  // Draws a model at a page position and scale: a soft cast shadow first, then its faces back to front.
   function draw3d(m, x, z, s, opts) {
     opts = opts || {};
     const y0 = opts.y || 0;
@@ -247,7 +221,6 @@
     return out;
   }
 
-  // ---------- models (units are roughly px at scale 1; y is up) ----------
   function rockModel(rnd, s, grey) {
     const m = model(), rot = rnd() * 6;
     loft(m, [ring(6, s, -s * 0.1, rnd, 0.45, rot, 1.25), ring(6, s * 0.6, s * (0.5 + rnd() * 0.4), rnd, 0.4, rot + 0.4, 1.25)],
@@ -338,7 +311,6 @@
     return m;
   }
 
-  // ---------- trees (drawn flat: a cone lit on its west half, the same view the 3D kit uses) ----------
   const PINES = [["#3f7a50", "#245039"], ["#4b8a55", "#2c5c3e"], ["#2f6a4a", "#1c4532"], ["#5a8f4f", "#35633a"]];
   function pine(x, y, h, pal, haze, dark) {
     const tw = h * 0.07;
@@ -373,7 +345,6 @@
     return poly([[x - h * 0.18, y], [x + h * 0.55, y - h * 0.12], [x + h * 0.7, y + h * 0.04], [x + h * 0.1, y + h * 0.1]], "#1c3326", " fill-opacity=\".16\"");
   }
 
-  // Small riverbank details, drawn flat.
   function reeds(r, x, y, s) {
     let out = "";
     for (let k = 0; k < 5; k++) {
@@ -398,7 +369,6 @@
       poly([c, d, m], tone("#5a9244", (r() - 0.5) * 0.1)) + poly([a, m, d], "#6aa24f");
   }
 
-  // A worn dirt path along page points: a faceted ribbon that the trees later overlap, so it disappears into the woods.
   function path(r, list, width, color) {
     const fr = frames(list);
     let s = "";
@@ -421,16 +391,12 @@
     return resample(out, 18);
   }
 
-  // ---------- the river's course ----------
-  // A Kinoshita curve, the sine-generated shape real meanders follow, then bent through anchors: where the
-  // hero's river leaves off, and through each stop.
   function course(W, H, anchors) {
     const theta = 1.15, skew = 0.035, flat = 0.02;
     function heading(s) {
       const k = s * 6.2832;
       return theta * Math.sin(k) + Math.pow(theta, 3) * (skew * Math.cos(3 * k) - flat * Math.sin(3 * k));
     }
-    // Trace one unit wavelength to learn its sideways reach, then scale so a full swing spans most of the page.
     let ux = 0, lo = 0, hi = 0;
     for (let s = 0; s < 1; s += 0.001) {
       ux += Math.sin(heading(s)) * 0.001;
@@ -443,7 +409,7 @@
     while (y < H + STEP * 2) {
       base.push([x, y]);
       const h = heading(s);
-      x += Math.sin(h) * STEP - ux * STEP; // ux: leftover sideways drift per wavelength, removed so the river stays centered
+      x += Math.sin(h) * STEP - ux * STEP;
       y += Math.cos(h) * STEP;
       s += STEP / scale;
     }
@@ -468,14 +434,13 @@
     const stations = opts.stations, cards = opts.cards;
     const cell = clamp(W / 13, 66, 112);
     const K = clamp(W / 1100, 0.5, 1);
-    const maxTrees = Math.round(700 + W); // keeps phones, whose pages run longest, to a lighter drawing // scale for set pieces, so phones get smaller cliffs and cabins
-    const T = clamp(W * 0.06, 46, 96); // typical tree height
+    const maxTrees = Math.round(700 + W);
+    const T = clamp(W * 0.06, 46, 96);
     const elev = waves(rng(3), 5, 0.006);
     const woods = waves(rng(5), 3, 0.004);
     const st = {};
     stations.forEach(function (s) { st[s.kind] = s; });
 
-    // Zones: where on the page each kind of country is, with soft edges so one blends into the next.
     function band(y0, y1, soft) { return function (y) { return smooth((y - y0 + soft) / soft) * smooth((y1 + soft - y) / soft); }; }
     function stationBand(s, pad, soft) { return s ? band(s.box.y - pad, s.box.y + s.box.h + pad, soft) : function () { return 0; }; }
     const inForest = stationBand(st.backpacking, 260, 260);
@@ -484,7 +449,6 @@
     const inGorge = gorgeTop ? band(gorgeTop.box.y - 120, gorgeEnd.box.y + gorgeEnd.box.h + 80, 200) : function () { return 0; };
     const inKarst = stationBand(st.caving, 220, 220);
     const pit = st.caving ? { x: st.caving.feature.x, y: st.caving.feature.z, rx: Math.min(st.caving.box.w * 0.3, 190 * K + 40), ry: 0 } : null;
-    // The sinkhole's rim: an irregular ring, settled here because the river is cut to end exactly on it.
     let rim = null;
     if (pit) {
       pit.ry = pit.rx * 0.62;
@@ -499,7 +463,6 @@
     const inDeepWoods = function (y) { return smooth((y - bottom) / 260); };
     const sideW = Math.max(110, opts.margin + 70);
 
-    // River: its course runs through every stop, and it ends by pouring into the cave.
     const rr = rng(7);
     const anchors = [{ y: 0, x: opts.start ? opts.start.x : W * 0.34, s: 240 }];
     stations.forEach(function (s) {
@@ -510,18 +473,16 @@
       [0.15, 0.5, 0.85].forEach(function (f) { anchors.push({ y: s.box.y + s.box.h * f, x: s.river, s: Math.max(120, s.box.h * 0.36) }); });
     });
     let full = course(W, H, anchors);
-    let lip = full.length - 1; // where the river goes over the edge into the cave
+    let lip = full.length - 1;
     if (pit) {
       const cross = function () { return full.findIndex(function (p) { return p[1] > pit.y - pit.ry * 1.5 && inPolygon(p, rim); }); };
       let i = cross();
       if (i > 6) {
-        // Ease the last stretch to run straight down, so the river meets the rim square on and falls straight.
         const x = full[i][0];
         for (let j = i - 6; j <= i + 1 && j < full.length; j++) full[j] = [full[j][0] + (x - full[j][0]) * smooth((j - (i - 6)) / 5), full[j][1]];
         i = cross();
       }
       if (i > 1) {
-        // Find the exact crossing of the rim, then run on a little so the water slides under the drop.
         const a = full[i - 1], b = full[i];
         let lo = 0, hi = 1;
         for (let k = 0; k < 18; k++) {
@@ -543,12 +504,26 @@
       if (opts.start && p[1] < 320) w = opts.start.w + (w - opts.start.w) * clamp(p[1] / 320, 0, 1);
       return w;
     });
+    const BIN = 160, binLo = Math.floor(Math.min.apply(null, center.map(function (p) { return p[1]; })) / BIN), bins = [];
+    for (let i = 0; i < center.length - 1; i++) {
+      const a = center[i], b = center[i + 1];
+      for (let k = Math.floor(Math.min(a[1], b[1]) / BIN); k <= Math.floor(Math.max(a[1], b[1]) / BIN); k++) (bins[k - binLo] = bins[k - binLo] || []).push(i);
+    }
     function riverDist(x, py) {
+      const home = Math.floor(py / BIN) - binLo;
       let best = Infinity;
-      for (let i = 0; i < center.length - 1; i++) {
-        const a = center[i], b = center[i + 1], dx = b[0] - a[0], dy = b[1] - a[1];
-        const t = clamp(((x - a[0]) * dx + (py - a[1]) * dy) / (dx * dx + dy * dy || 1), 0, 1);
-        best = Math.min(best, Math.hypot(x - a[0] - dx * t, py - a[1] - dy * t));
+      for (let r = 0; home - r >= 0 || home + r < bins.length; r++) {
+        for (let side = r ? -1 : 1; side <= 1; side += 2) {
+          const list = bins[home + side * r];
+          if (!list) continue;
+          for (let j = 0; j < list.length; j++) {
+            const a = center[list[j]], b = center[list[j] + 1], dx = b[0] - a[0], dy = b[1] - a[1];
+            const t = clamp(((x - a[0]) * dx + (py - a[1]) * dy) / (dx * dx + dy * dy || 1), 0, 1);
+            const d = Math.hypot(x - a[0] - dx * t, py - a[1] - dy * t);
+            if (d < best) best = d;
+          }
+        }
+        if (best <= r * BIN) break;
       }
       return best;
     }
@@ -557,7 +532,6 @@
       return null;
     }
 
-    // Places that must stay open: around each stop's set piece, and the hills.
     const clearings = [];
     const mounds = [];
     if (st.gear) clearings.push({ x: st.gear.feature.x, y: st.gear.feature.z, rx: 170 * K + 30, ry: 110 * K + 20, soft: true });
@@ -582,8 +556,6 @@
       const d = Math.pow((x - m.x) / m.rx, 2) + Math.pow((z - m.z) / m.rz, 2);
       return d >= 1 ? 0 : m.h * Math.pow(1 - d, 1.5) * (1 + 0.12 * elev(x * 3, z * 3));
     }
-    // How strongly the forest claims a spot: the page edges everywhere, the whole width in the forest and
-    // above the footer, thinner in the gorge and around the cave, never on the water or in a clearing.
     function forestAt(x, y) {
       const edge = Math.min(x, W - x);
       let f = smooth((sideW - edge) / (sideW * 0.75));
@@ -591,13 +563,10 @@
       f *= 1 - 0.55 * inGorge(y) - 0.35 * inKarst(y) - 0.45 * inHills(y);
       f += woods(x, y) * 0.28;
       f *= 1 - cleared(x, y);
-      return f * smooth((y - FADE * 0.8) / (FADE * 0.8)); // the woods begin below the hero's haze
+      return f * smooth((y - FADE * 0.8) / (FADE * 0.8));
 
     }
 
-    // ---------- ground ----------
-    // Offset rows of jittered points make near-equilateral triangles. Each point gets a height so the facets
-    // can be lit from the upper left, like the mountains in the hero; the color follows the zones.
     const r = rng(11);
     const rowH = cell * 0.86, rows = Math.ceil(H / rowH) + 1, cols = Math.ceil(W / cell) + 2;
     const grid = [];
@@ -639,7 +608,6 @@
       }
     }
 
-    // Trails, laid on the ground before anything stands on it.
     const rp = rng(31);
     const DIRT = "#cdb487";
     if (st.gear) {
@@ -656,8 +624,6 @@
       body += path(rp, wander(rp, [pit.x + pit.rx * 0.9, pit.y + pit.ry * 0.6], [pit.x < W / 2 ? W + 20 : -20, pit.y + 300 * K], 10, 70), 7 * K + 3, DIRT);
     }
 
-    // Water: each cross-section is six jittered points (bank, edge, two mid-channel, edge, bank), and the
-    // quads between sections split on alternating diagonals. Shallows are pale, the channel deep blue.
     const fr = frames(center);
     const sections = center.map(function (p, i) {
       const f = fr[i], w = widths[i] / 2, bank = baseWidth * 0.22;
@@ -665,13 +631,13 @@
         w + bank * (0.5 + rr() * 0.9), w * (0.92 + rr() * 0.16), w * (0.3 + rr() * 0.12),
         -w * (0.3 + rr() * 0.12), -w * (0.92 + rr() * 0.16), -w - bank * (0.5 + rr() * 0.9),
       ].map(function (off, k) {
-        // No sliding on the last cross-section before the cave, so its edge is straight where the falls begin.
         const slide = k === 0 || k === 5 || (pit && i >= lip - 1) ? 0 : (rr() - 0.5) * 10;
         return [p[0] + f.n[0] * off + f.t[0] * slide, p[1] + f.n[1] * off + f.t[1] * slide];
       });
     });
+    let shine = "";
     const lanes = ["#c7b984", "#93cfe2", "#5ea7cb", "#93cfe2", "#c7b984"];
-    const lastQuad = pit ? lip - 1 : sections.length - 1; // at the cave, the spill takes over from here
+    const lastQuad = pit ? lip - 1 : sections.length - 1;
     for (let i = 0; i < lastQuad; i++) {
       const a = sections[i], b = sections[i + 1], white = inGorge(center[i][1]);
       for (let k = 0; k < 5; k++) {
@@ -689,18 +655,14 @@
       const p = center[i], f = fr[i], side = (rr() - 0.5) * widths[i] * 0.4, g = widths[i] * 0.4;
       if (p[1] < FADE) continue;
       const x = p[0] + f.n[0] * side, gy = p[1] + f.n[1] * side;
-      body += poly([[x - f.t[0] * g, gy - f.t[1] * g], [x - f.t[1] * 1.8, gy + f.t[0] * 1.8], [x + f.t[0] * g, gy + f.t[1] * g]], "#ffffff",
+      shine += poly([[x - f.t[0] * g, gy - f.t[1] * g], [x - f.t[1] * 1.8, gy + f.t[0] * 1.8], [x + f.t[0] * g, gy + f.t[1] * g]], "#ffffff",
         " class=\"glint\" style=\"animation-delay:" + ((i * 0.37) % 5).toFixed(2) + "s\"");
     }
 
-    // The cave: a sinkhole the river pours into. Seen from above and to the south, its far wall drops away
-    // in lit rock to darkness, and its near rim hides the rest. The waterfall runs down the far wall.
     if (pit) {
       const rc = rng(38), N = rim.length;
       const depth = pit.ry * 2.1, LV = 6;
       let inside = poly(rim, "#0b0f0d");
-      // The far wall: from each rim point a jittered line of points drops away, shelving inward; neighbouring
-      // lines share their points, so the rock facets between them meet without gaps and darken as they go down.
       const drops = rim.map(function (p) {
         const col = [p];
         for (let lv = 1; lv <= LV; lv++) {
@@ -719,16 +681,11 @@
           inside += poly([A[lv], B[lv], B[lv + 1]], c1, " stroke=\"" + c1 + "\" stroke-width=\".8\"") + poly([A[lv], B[lv + 1], A[lv + 1]], c2, " stroke=\"" + c2 + "\" stroke-width=\".8\"");
         }
       });
-      // The near rim casts a shadow onto the far wall just inside it.
       rim.forEach(function (p, k) {
         const q = rim[(k + 1) % N];
         if (Math.max(p[1], q[1]) < pit.y + pit.ry * 0.2) return;
         inside += poly([p, q, [q[0], q[1] - 16 * K], [p[0], p[1] - 16 * K]], "#000000", " fill-opacity=\".35\"");
       });
-      // The waterfall: one sheet of water from the river's full width at the lip, narrowing and darkening as it
-      // falls down the far wall, streaked white, with spray where it lands in the dark.
-      // It starts from the river's last whole cross-section before the rim, so the water itself bends over the
-      // edge (the "spill", drawn over the rim below) rather than meeting the drop along a seam.
       const end = center[lip], fall = widths[lip], SL = 8;
       const edgeA = sections[lip - 1][1], edgeB = sections[lip - 1][4];
       const spillL = edgeA[0] < edgeB[0] ? edgeA : edgeB, spillR = edgeA[0] < edgeB[0] ? edgeB : edgeA;
@@ -758,7 +715,6 @@
         const mx = sx + (rc() - 0.5) * half * 4, my = spillY + drop * (0.84 + rc() * 0.12), sz = (8 + rc() * 12) * K + 4;
         inside += poly([[mx - sz, my], [mx, my - sz * 0.6], [mx + sz, my], [mx, my + sz * 0.35]], "#e4f2f5", " fill-opacity=\".2\"");
       }
-      // A caver rappels the far wall beside the falls, lamp lit, roped to the rim.
       const sc = 0.85 * K + 0.25, ropeX = end[0] + fall * 1.6 + 14 * K;
       const ropeTop = rim.filter(function (p) { return p[1] < pit.y; }).reduce(function (best, p) {
         return Math.abs(p[0] - ropeX) < Math.abs(best[0] - ropeX) ? p : best;
@@ -768,15 +724,12 @@
       inside += "<g class=\"lantern\">" + poly([[caver[0] - 24 * K - 8, caver[1] - 6], [caver[0], caver[1] - 30 * sc], [caver[0] + 24 * K + 8, caver[1] - 6], [caver[0], caver[1] + 16 * K]], "#f6d36b", " fill-opacity=\".18\"") + "</g>";
       inside += draw3d(personModel("#d9573b", "#f2d35b", "#3f87ad"), caver[0], caver[1], sc, { shadow: false });
       body += "<defs><clipPath id=\"sinkhole\"><polygon points=\"" + pts2(rim) + "\"/></clipPath></defs><g clip-path=\"url(#sinkhole)\">" + inside + "</g>";
-      // Grass and moss lip hanging over the rim's far edge.
       rim.forEach(function (p, k) {
         const q = rim[(k + 1) % N];
         if (Math.min(p[1], q[1]) > pit.y + pit.ry * 0.1 || Math.abs((p[0] + q[0]) / 2 - end[0]) < fall * 0.7) return;
         const m = [(p[0] + q[0]) / 2 + (rc() - 0.5) * 4, (p[1] + q[1]) / 2 + (5 + rc() * 7) * K + 2];
         body += poly([p, q, m], rc() < 0.5 ? "#6fa462" : "#5a8f58");
       });
-      // The spill: the river bending over the rim into the sheet below, with white water breaking across it.
-      // The banks run down to the rim beside it, so no ground shows between the river's edge and the falls.
       [[bankL, spillL], [spillR, bankR]].forEach(function (b) {
         const c = tone("#c7b984", (rc() - 0.5) * 0.08);
         body += poly([b[0], b[1], [b[1][0], spillY], [b[0][0], spillY]], c, " stroke=\"" + c + "\" stroke-width=\".8\"");
@@ -787,18 +740,16 @@
       });
       for (let k = 0; k < 7; k++) {
         const t = k / 6, x = spill[0][0] + (spill[1][0] - spill[0][0]) * t, y = spill[0][1] + (spill[1][1] - spill[0][1]) * t + (spillY - mid[1]) * 0.6, s = (3 + rc() * 4) * K + 2;
-        body += poly([[x - s, y + 1], [x, y - s * 0.8], [x + s, y + 1], [x, y + s * 0.5]], "#ffffff", " class=\"surf\" style=\"animation-delay:" + (rc() * 3).toFixed(2) + "s\"");
+        shine += poly([[x - s, y + 1], [x, y - s * 0.8], [x + s, y + 1], [x, y + s * 0.5]], "#ffffff", " class=\"surf\" style=\"animation-delay:" + (rc() * 3).toFixed(2) + "s\"");
       }
     }
 
-    // ---------- everything that stands on the ground, painted back to front ----------
     const pieces = [];
     function add(y, svg, grow) { pieces.push({ y: y, svg: svg, grow: grow }); }
     function hidden(x0, y0, x1, y1) {
       return cards.some(function (c) { return x0 > c.x + 6 && x1 < c.x + c.w - 6 && y0 > c.y + 6 && y1 < c.y + c.h - 6; });
     }
 
-    // Forests: trees packed on a jittered grid wherever the forest claims the ground.
     const rt = rng(17);
     const gap = T * 0.5;
     let count = 0;
@@ -825,13 +776,11 @@
       }
       if (count > maxTrees) break;
     }
-    // The tree line closes into the footer.
     let skyline = [[-10, H + 2]];
     for (let x = -10; x <= W + 20; x += T * 0.32) skyline.push([x, H - T * (0.25 + rt() * 0.3)], [x + T * 0.16, H - T * (0.05 + rt() * 0.1)]);
     skyline.push([W + 20, H + 2]);
     add(H + 50, poly(skyline, NIGHT));
 
-    // Rolling hills for the biking stop, with switchbacks climbing the main one.
     const rh = rng(41);
     mounds.forEach(function (mnd) {
       const m = model(), rings = 5, n = 11, P = [[[mnd.x, moundHeight(mnd, mnd.x, mnd.z), mnd.z]]];
@@ -887,8 +836,6 @@
       }
     });
 
-    // The gorge: both banks rise in clusters of granite columns, taller near the water and stepping down behind.
-    // A column never stands so tall that its top would hide the river.
     const rg = rng(43);
     function column(x, z, rc, h, grey) {
       const m = model(), rot = rg() * 6, moss = rg() < 0.55;
@@ -916,8 +863,6 @@
         }
       });
     }
-    // The climbing crag: a tall cluster on the east bank, its sunlit west face toward the river, with one
-    // climber leading up the face and a partner belaying at its foot.
     if (st.climbing) {
       const f = st.climbing.feature, cx = Math.max(f.x, (riverXAt(f.z) || f.x) + baseWidth * 0.9 + 40 * K);
       const cols = [[0, 0, 30, 1], [-8, 26, 24, 0.82], [26, -18, 26, 0.9], [40, 20, 22, 0.66], [-4, -34, 22, 0.74], [58, -6, 20, 0.55]];
@@ -932,7 +877,6 @@
         draw3d(personModel("#d9573b", "#f2b44f"), mid[0], mid[2], s, { y: mid[1], shadow: false }) +
         draw3d(personModel("#3f87ad", "#f2d35b"), belay[0], belay[2], s), true);
     }
-    // Rapids: rocks breaking the water and kayakers in the eddies.
     if (st.whitewater) {
       const b = st.whitewater.box, rw = rng(47);
       center.forEach(function (p, i) {
@@ -940,7 +884,7 @@
         const f = fr[i], off = (rw() - 0.5) * widths[i] * 0.7;
         add(p[1] + f.n[1] * off, draw3d(rockModel(rw, (4 + rw() * 5) * K + 2, "#8f9188"), p[0] + f.n[0] * off, p[1] + f.n[1] * off, 1, { shadow: 0.15 }));
         const c = [p[0] + f.n[0] * (rw() - 0.5) * widths[i] * 0.6, p[1] + f.n[1] * (rw() - 0.5) * widths[i] * 0.6], g = widths[i] * 0.22;
-        body += poly([[c[0] + f.n[0] * g, c[1] + f.n[1] * g], [c[0] + f.t[0] * 7, c[1] + f.t[1] * 7], [c[0] - f.n[0] * g, c[1] - f.n[1] * g], [c[0] + f.t[0] * 3, c[1] + f.t[1] * 3]],
+        shine += poly([[c[0] + f.n[0] * g, c[1] + f.n[1] * g], [c[0] + f.t[0] * 7, c[1] + f.t[1] * 7], [c[0] - f.n[0] * g, c[1] - f.n[1] * g], [c[0] + f.t[0] * 3, c[1] + f.t[1] * 3]],
           "#ffffff", " class=\"surf\" style=\"animation-delay:" + (rw() * 3).toFixed(2) + "s\"");
       });
       [0.35, 0.7].forEach(function (f, k) {
@@ -951,7 +895,6 @@
       });
     }
 
-    // The Wilderness Outpost: a cabin in the meadow by the river, a dock, and canoes on a rack.
     if (st.gear) {
       const f = st.gear.feature, s = 0.95 * K + 0.12, rx = riverXAt(f.z + 40 * K);
       add(f.z + 40 * s, draw3d(cabinModel(), f.x, f.z, s, { shadow: 0.22 }), true);
@@ -971,7 +914,6 @@
       add(f.z + 70 * s, draw3d(personModel("#3f87ad", "#2f6449", "#f2b44f"), f.x + 30 * s, f.z + 54 * s, s * 1.1, { shadow: 0.15 }), true);
     }
 
-    // The campsite: two tents and a fire in a clearing in the woods.
     if (st.backpacking) {
       const f = st.backpacking.feature, s = 1.1 * K + 0.2, rc2 = rng(53);
       add(f.z - 10 * s, draw3d(tentModel("#f2b44f", 20, 26, 22), f.x - 50 * s, f.z - 16 * s, s, { shadow: 0.2 }), true);
@@ -984,7 +926,6 @@
         draw3d(personModel("#f2b44f", "#5a4030"), f.x - 28 * s, f.z + 38 * s, s, { shadow: 0.15 }), true);
     }
 
-    // Around the cave: boulders on the rim and around it, and a partner watching from the near edge.
     if (pit) {
       const rk = rng(59), s = 0.9 * K + 0.25;
       for (let k = 0; k < 14; k++) {
@@ -1001,7 +942,6 @@
       add(spot[1] + 4, draw3d(personModel("#3f87ad", "#f2d35b", "#b8562f"), spot[0], spot[1], s), true);
     }
 
-    // Riverbank details that sprout as the kayak passes.
     const rb = rng(13);
     for (let i = 3; i < last - 2; i += 1 + Math.floor(rb() * 2)) {
       const p = center[i], f = fr[i], side = rb() < 0.5 ? -1 : 1, edge = widths[i] / 2 + baseWidth * 0.3;
@@ -1019,8 +959,6 @@
       add(y, svg, true);
     }
 
-    // Grouped into thin rows by depth, so the kayak can be slipped in between them and pass behind
-    // whatever stands in front of it.
     pieces.sort(function (a, b) { return a.y - b.y; });
     let row = null, rowSvg = "";
     pieces.forEach(function (p) {
@@ -1034,10 +972,10 @@
     });
     if (rowSvg) body += "<g data-row=\"" + row * ROW + "\">" + rowSvg + "</g>";
 
-    return {
-      svg: "<svg xmlns=\"" + SVGNS + "\" viewBox=\"0 0 " + W + " " + H + "\" preserveAspectRatio=\"none\" aria-hidden=\"true\" focusable=\"false\">" + body + "</svg>",
-      route: center,
-    };
+    function svg(cls, content) {
+      return "<svg xmlns=\"" + SVGNS + "\"" + (cls ? " class=\"" + cls + "\"" : "") + " viewBox=\"0 0 " + W + " " + H + "\" preserveAspectRatio=\"none\" aria-hidden=\"true\" focusable=\"false\">" + content + "</svg>";
+    }
+    return { svg: svg("", body) + svg("shine", shine), route: center };
   }
 
   const land = document.createElement("div");
@@ -1045,8 +983,6 @@
   host.insertBefore(land, host.firstChild);
   const art = document.createElement("div");
   land.appendChild(art);
-  // The kayak lives inside the drawing, moved between rows of scenery as it travels, so trees, rocks and
-  // banks in front of it hide it the way they should.
   const kayak = document.createElementNS(SVGNS, "g");
   kayak.innerHTML =
     "<g transform=\"translate(-23 -13)\">" +
@@ -1058,7 +994,6 @@
   let route = [], sprouts = [], grown = 0, rows = [], slot = -1, boatSize = 1;
   function paddle() {
     if (route.length < 2) return;
-    // Keep the kayak a little below the middle of the screen, on the river; past the river's end it has gone into the cave.
     const target = window.innerHeight * 0.58 - host.getBoundingClientRect().top;
     const end = route[route.length - 1];
     let lo = 0, hi = route.length - 1;
@@ -1073,7 +1008,6 @@
     const x = a[0] + (b[0] - a[0]) * t, y = a[1] + (b[1] - a[1]) * t + gone * 30;
     kayak.setAttribute("opacity", (1 - gone).toFixed(2));
     kayak.setAttribute("transform", "translate(" + x.toFixed(1) + " " + y.toFixed(1) + ") rotate(" + angle.toFixed(1) + ") scale(" + (boatSize * (1 - gone * 0.5)).toFixed(2) + ")");
-    // Slot it in front of the rows behind it and behind the rows in front (a row's y is where its pieces meet the ground).
     let k = 0;
     while (k < rows.length && rows[k].y <= y + 4) k++;
     if (k !== slot) {
@@ -1081,7 +1015,6 @@
       const svg = art.firstChild;
       if (svg) svg.insertBefore(kayak, k < rows.length ? rows[k].el : null);
     }
-    // Scenery a little way downstream of the kayak grows in; once grown it stays.
     const reach = target + window.innerHeight * 0.32;
     while (grown < sprouts.length && sprouts[grown].y < reach) {
       sprouts[grown].el.classList.add("up");
@@ -1089,17 +1022,14 @@
     }
   }
 
-  // Where the hero's river meets the bottom of the hero, in this element's coordinates.
   function heroRiver(hostBox) {
     const valley = document.querySelector(".scene img[src$='valley.svg']");
     if (!valley) return null;
     const v = valley.getBoundingClientRect();
-    const scale = Math.max(v.width / 1440, v.height / 720); // the layers use xMidYMax slice
+    const scale = Math.max(v.width / 1440, v.height / 720);
     return { x: v.left + v.width / 2 + (HERO_RIVER.x - 720) * scale - hostBox.left, w: HERO_RIVER.w * scale };
   }
 
-  // Each stop: the river runs through the open slot beside its card, on the side nearest the card, and the
-  // stop's set piece takes the rest of the slot. At the rapids and the cave the river runs down the middle.
   function readStations(hostBox) {
     return Array.from(host.querySelectorAll("[data-station]")).map(function (row, i) {
       const slot = row.querySelector(".spot").getBoundingClientRect();
@@ -1110,7 +1040,6 @@
       let side = beside ? (card.left < slot.left ? 0.18 : 0.82) : (i % 2 ? 0.16 : 0.84);
       if (kind === "whitewater" || kind === "caving") side = 0.5;
       if (kind === "climbing") {
-        // The crag's sunlit face looks west, so the river runs down the west side of the slot.
         return { kind: kind, box: box, river: box.x + box.w * 0.24, feature: { x: box.x + box.w * 0.62, z: box.y + box.h * 0.62 } };
       }
       const featureAt = side < 0.5 ? 0.62 : side > 0.5 ? 0.38 : 0.5;
@@ -1120,8 +1049,6 @@
       };
     });
   }
-  // Where the cards rest once they have popped in (offsets ignore the reveal transform). Scenery wholly under
-  // one is skipped. The pinned chart moves, so it never hides anything.
   function readCards() {
     return Array.from(host.querySelectorAll(".card:not(.stick)")).map(function (c) {
       let x = 0, y = 0, e = c;
@@ -1134,7 +1061,6 @@
     });
   }
 
-  // Rebuild when the width changes or the page grows or shrinks noticeably (fonts loading, narrow layouts).
   let drawn = "", queued = false;
   function draw() {
     queued = false;
@@ -1160,15 +1086,22 @@
     grown = 0;
     paddle();
   }
+  let settle = 0;
   function queue() {
-    if (!queued) {
-      queued = true;
-      requestAnimationFrame(draw);
-    }
+    clearTimeout(settle);
+    settle = setTimeout(function () {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(draw);
+      }
+    }, drawn ? 200 : 0);
   }
-  if ("ResizeObserver" in window) new ResizeObserver(queue).observe(host);
-  else window.addEventListener("resize", queue);
-  queue();
+  const fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  Promise.race([fonts, new Promise(function (r) { setTimeout(r, 1500); })]).then(function () {
+    if ("ResizeObserver" in window) new ResizeObserver(queue).observe(host);
+    else window.addEventListener("resize", queue);
+    queue();
+  });
 
   let rowing = false;
   window.addEventListener("scroll", function () {
